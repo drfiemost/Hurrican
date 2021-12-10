@@ -14,6 +14,10 @@
 #include "Gameplay.hpp"
 #include "Logdatei.hpp"
 
+#if SDL_VERSION_ATLEAST(2,0,0)
+#  include <SDL_gamecontroller.h>
+#endif
+
 // --------------------------------------------------------------------------------------
 // Konstruktor
 // --------------------------------------------------------------------------------------
@@ -27,6 +31,9 @@ DirectJoystickClass::DirectJoystickClass() {
     JoystickPOV = -1;
     CanForceFeedback = false;
     NumButtons = 0;
+
+    // hardcoded button values
+    startButton = 7;
 
     for (int i = 0; i < MAX_JOYSTICKBUTTONS; i++)
         JoystickButtons[i] = false;
@@ -87,6 +94,18 @@ bool DirectJoystickClass::Init(int joy) {
         strcpy_s(JoystickName, sizeof(JoystickName) - 1, SDL_JoystickName(SDLJOYINDEX));  // Truncate to fit
         JoystickName[sizeof(JoystickName) - 1] = '\0';                            // and null-terminate
     }
+
+#if SDL_VERSION_ATLEAST(2,0,0)
+    if (SDL_IsGameController(joy)) {
+        SDL_GameController* controller = SDL_GameControllerOpen(joy);
+        SDL_GameControllerButtonBind bind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_START);
+        if (bind.bindType != SDL_CONTROLLER_BINDTYPE_NONE) {
+            startButton = bind.value.button;
+            Protokoll << "Button Start mapped to " << startButton << std::endl;
+        }
+        SDL_GameControllerClose(controller);
+    }
+#endif
 
     Protokoll << "Joystick " << joy << ": Acquire successful!\nButtons: " << NumButtons << " Name: " << JoystickName
               << std::endl;
@@ -169,5 +188,5 @@ bool DirectJoystickClass::ButtonDeletePressed() {
 }
 
 bool DirectJoystickClass::ButtonStartPressed() {
-    return JoystickButtons[7];  // FIXME
+    return JoystickButtons[startButton];
 }

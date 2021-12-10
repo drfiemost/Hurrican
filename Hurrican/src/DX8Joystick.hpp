@@ -48,6 +48,8 @@ class DirectJoystickClass {
     char JoystickName[70];                      // Joystick Produktname
     int NumButtons;                             // How many buttons joystick supports
 
+    int startButton;
+
     DirectJoystickClass();
     ~DirectJoystickClass();
 
