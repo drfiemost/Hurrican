@@ -32,8 +32,11 @@ DirectJoystickClass::DirectJoystickClass() {
     CanForceFeedback = false;
     NumButtons = 0;
 
-    // hardcoded button values
+    // hardcoded default button values
     startButton = 7;
+    enterButton = 0;
+    backButton = 1;
+    deleteButton = 4;
 
     for (int i = 0; i < MAX_JOYSTICKBUTTONS; i++)
         JoystickButtons[i] = false;
@@ -95,20 +98,39 @@ bool DirectJoystickClass::Init(int joy) {
         JoystickName[sizeof(JoystickName) - 1] = '\0';                            // and null-terminate
     }
 
+    Protokoll << "Joystick " << joy << ": Acquire successful!\nButtons: " << NumButtons
+        << " \nName: " << JoystickName << std::endl;
+
 #if SDL_VERSION_ATLEAST(2,0,0)
     if (SDL_IsGameController(joy)) {
+        Protokoll << "It's a Game Controller, mapping standard buttons..." << std::endl;
+
         SDL_GameController* controller = SDL_GameControllerOpen(joy);
-        SDL_GameControllerButtonBind bind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_START);
+        SDL_GameControllerButtonBind bind;
+        
+        bind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_START);
         if (bind.bindType != SDL_CONTROLLER_BINDTYPE_NONE) {
             startButton = bind.value.button;
-            Protokoll << "Button Start mapped to " << startButton << std::endl;
+            Protokoll << "Start function mapped to button START (" << startButton << ")" << std::endl;
+        }
+        bind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_A);
+        if (bind.bindType != SDL_CONTROLLER_BINDTYPE_NONE) {
+            enterButton = bind.value.button;
+            Protokoll << "Enter function mapped to button A (" << startButton << ")" << std::endl;
+        }
+        bind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_B);
+        if (bind.bindType != SDL_CONTROLLER_BINDTYPE_NONE) {
+            backButton = bind.value.button;
+            Protokoll << "Back function mapped to button B (" << startButton << ")" << std::endl;
+        }
+        bind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+        if (bind.bindType != SDL_CONTROLLER_BINDTYPE_NONE) {
+            deleteButton = bind.value.button;
+            Protokoll << "Delete function mapped to button LB (" << startButton << ")" << std::endl;
         }
         SDL_GameControllerClose(controller);
     }
 #endif
-
-    Protokoll << "Joystick " << joy << ": Acquire successful!\nButtons: " << NumButtons << " Name: " << JoystickName
-              << std::endl;
 
     return true;
 }
@@ -176,15 +198,15 @@ bool DirectJoystickClass::Update() {
 
 // DKS-Added these three for better joystick support, esp in menus
 bool DirectJoystickClass::ButtonEnterPressed() {
-    return JoystickButtons[0];  // Default is button 0
+    return JoystickButtons[enterButton];
 }
 
 bool DirectJoystickClass::ButtonEscapePressed() {
-    return JoystickButtons[1];  // Default is button 1
+    return JoystickButtons[backButton];
 }
 
 bool DirectJoystickClass::ButtonDeletePressed() {
-    return JoystickButtons[4];  // Default is button 4
+    return JoystickButtons[deleteButton];
 }
 
 bool DirectJoystickClass::ButtonStartPressed() {

@@ -49,6 +49,9 @@ class DirectJoystickClass {
     int NumButtons;                             // How many buttons joystick supports
 
     int startButton;
+    int enterButton;
+    int backButton;
+    int deleteButton;
 
     DirectJoystickClass();
     ~DirectJoystickClass();
