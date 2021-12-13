@@ -18,6 +18,8 @@
 #  include <SDL_gamecontroller.h>
 #endif
 
+constexpr Uint16 rumble[4] = { 20000, 40000, 60000, 30000 };
+
 // --------------------------------------------------------------------------------------
 // Konstruktor
 // --------------------------------------------------------------------------------------
@@ -55,6 +57,7 @@ DirectJoystickClass::~DirectJoystickClass() {}
 void DirectJoystickClass::ForceFeedbackEffect(int nr) {
     if (UseForceFeedback == false || CanForceFeedback == false)
         return;
+    SDL_JoystickRumble(lpDIJoystick, rumble[nr], rumble[nr], 100 * nr);
 }
 
 // --------------------------------------------------------------------------------------
@@ -64,6 +67,7 @@ void DirectJoystickClass::ForceFeedbackEffect(int nr) {
 void DirectJoystickClass::StopForceFeedbackEffect(int nr) {
     if (UseForceFeedback == false || CanForceFeedback == false)
         return;
+    SDL_JoystickRumble(lpDIJoystick, 0, 0, 0);
 }
 
 #if SDL_VERSION_ATLEAST(2,0,0)
@@ -88,7 +92,6 @@ bool DirectJoystickClass::Init(int joy) {
 
     Active = true;
     NumButtons = SDL_JoystickNumButtons(lpDIJoystick);
-    CanForceFeedback = false;  // Forced false for now until implemented
 
     // Get joystick's name
     if (strlen(SDL_JoystickName(SDLJOYINDEX)) < sizeof(JoystickName)) {
@@ -100,6 +103,10 @@ bool DirectJoystickClass::Init(int joy) {
 
     Protokoll << "Joystick " << joy << ": Acquire successful!\nButtons: " << NumButtons
         << " \nName: " << JoystickName << std::endl;
+
+    CanForceFeedback = (SDL_JoystickHasRumble(lpDIJoystick) == SDL_TRUE);
+
+    Protokoll << "Force-feedback: " << std::boolalpha << CanForceFeedback << std::endl;
 
 #if SDL_VERSION_ATLEAST(2,0,0)
     if (SDL_IsGameController(joy)) {
