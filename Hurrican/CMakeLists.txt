@@ -548,3 +548,26 @@ else()
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/lang/      DESTINATION lang)
     install(FILES     ${CMAKE_SOURCE_DIR}/readme.txt DESTINATION ./)
 endif()
+
+# CPack
+
+if(WIN32)
+    set(_fmt ZIP)
+else()
+    set(_fmt TGZ)
+endif()
+set(CPACK_GENERATOR ${_fmt})
+set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+set(CPACK_SOURCE_IGNORE_FILES
+    /.git*
+    /.*build*
+)
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/readme.txt")
+string(TOLOWER ${CMAKE_SYSTEM_NAME} _sys)
+string(TOLOWER ${PROJECT_NAME} _project_lower)
+set(CPACK_PACKAGE_FILE_NAME "${_project_lower}-${_sys}")
+string(TIMESTAMP TODAY "%Y%m%d")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${_project_lower}-${TODAY}")
+#set(CPACK_SOURCE_PACKAGE_FILE_NAME "${_project_lower}-${PROJECT_VERSION}")
+include(CPack)
