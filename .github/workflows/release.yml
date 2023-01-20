@@ -62,7 +62,7 @@ jobs:
         cp `which libGLESv2.dll` ${PACKAGE_NAME}
         strip ${PACKAGE_NAME}/*.dll
         zip -r ${PACKAGE_NAME}.zip ${PACKAGE_NAME}/*
-    - uses: svenstaro/upload-release-action@v1-release
+    - uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: Hurrican/hurrican-${{ steps.get_tag_name.outputs.tagname }}-w64.zip
