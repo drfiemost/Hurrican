@@ -63,7 +63,7 @@ jobs:
     - uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: hurrican-${{ steps.get_tag_name.outputs.tagname }}-w64.zip
+        file: Hurrican/hurrican-${{ steps.get_tag_name.outputs.tagname }}-w64.zip
         tag: ${{ github.ref }}
         file_glob: true
         overwrite: true
