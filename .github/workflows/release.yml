@@ -58,6 +58,8 @@ jobs:
         strip ${PACKAGE_NAME}/hurrican.exe
         upx ${PACKAGE_NAME}/hurrican.exe || true
         ldd ${PACKAGE_NAME}/hurrican.exe |grep -vi Windows|awk '{ print $3 }' | while read file ; do cp "$file" ${PACKAGE_NAME} ; done
+        cp `which libEGL.dll` ${PACKAGE_NAME}
+        cp `which libGLESv2.dll` ${PACKAGE_NAME}
         strip ${PACKAGE_NAME}/*.dll
         zip -r ${PACKAGE_NAME}.zip ${PACKAGE_NAME}/*
     - uses: svenstaro/upload-release-action@v1-release
