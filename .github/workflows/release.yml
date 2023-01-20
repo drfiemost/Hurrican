@@ -34,7 +34,7 @@ jobs:
         ref: ${{ github.ref }}
     - name: Get the tag name
       id: get_tag_name
-      run: echo ::set-output name=tagname::${GITHUB_REF#refs/tags/v}
+      run: echo "tagname=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
     - name: build
       run: |
         mkdir Hurrican/build
