@@ -50,7 +50,8 @@ jobs:
         export PACKAGE_NAME=hurrican-${{ steps.get_tag_name.outputs.tagname }}-w64
         cd Hurrican
         mkdir ${PACKAGE_NAME}
-        cp README.md ${PACKAGE_NAME}
+        cp ../README.md ${PACKAGE_NAME}
+        cp ../LICENSE ${PACKAGE_NAME}
         cp build/hurrican.exe ${PACKAGE_NAME}
         cp -r data ${PACKAGE_NAME}
         cp -r lang ${PACKAGE_NAME}
